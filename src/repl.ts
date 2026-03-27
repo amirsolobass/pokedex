@@ -2,7 +2,7 @@ import type { State } from './state.js'
 
 
 
-
+// PREVIOUS (LOCAL) REPL IMPLEMENTATION
 export function startREPL(state: State) {
     // display the prompt to the user
     state.readline.prompt();

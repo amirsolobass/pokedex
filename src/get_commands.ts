@@ -6,6 +6,10 @@ import { commandCatch } from "./command_catch.js"
 import type { CLICommand, State } from "./state.js"
 import { commandInspect } from "./command_inspect.js"
 import { commandPokedex } from "./command_pokedex.js"
+import { commandParty } from "./command_party.js"
+import { commandSwitch } from "./command_switch.js"
+import { commandDeleteGame } from "./command_delete.js"
+import { commandRelease } from "./command_release.js"
 
 export function getCommands(): Record<string, CLICommand> {
     return {
@@ -33,6 +37,26 @@ export function getCommands(): Record<string, CLICommand> {
             name: "mapb",
             description: "Displays the names of 20 (previous) location areas in the Pokemon world",
             callback: commandMapb,
+        },
+        party: {
+            name: "party",
+            description: "Displays the Pokemon currently in your party",
+            callback: commandParty,
+        },
+        switch: {
+            name: "switch",
+            description: "Add a Pokemon to your party or swap one (switch <id> <1-6>)",
+            callback: commandSwitch,
+        },
+        release: {
+            name: "release",
+            description: "Release a caught Pokemon back to the wild",
+            callback: commandRelease,
+        },
+        reset: {
+            name: "reset",
+            description: "Deletes your save file and restarts your journey. WARNING: IRREVERSIBLE!",
+            callback: commandDeleteGame,
         },
         explore: {
             name: "explore",

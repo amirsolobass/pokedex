@@ -1,4 +1,5 @@
 import { Cache } from "./pokecache.js";
+import { randomUUID } from 'node:crypto';
 
 export class PokeAPI {
     private static readonly baseURL = "https://pokeapi.co/api/v2";
@@ -139,12 +140,12 @@ export type Location = {
 };
 
 export interface Pokemon {
-    id: number
-    name: string
-    base_experience: number
-    height: number
-    weight: number
-    location_area_encounters: string
+    id: number;
+    name: string;
+    base_experience: number;
+    height: number;
+    weight: number;
+    location_area_encounters: string;
     stats: {
         base_stat: number;
         stat: {
@@ -156,4 +157,17 @@ export interface Pokemon {
             name: string;
         };
     }[];
+}
+
+export interface PokedexREPLContext {
+    party: Pokemon[];
+    help: () => void;
+    [key: string]: any;
+}
+
+export interface CaughtPokemon extends Pokemon {
+    instanceId: string;
+    speciesId: number;
+    level: number;
+    experience: number;
 }

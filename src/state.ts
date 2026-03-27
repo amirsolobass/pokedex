@@ -1,6 +1,8 @@
 import { createInterface, type Interface } from "node:readline";
 import { getCommands } from "./get_commands.js";
-import { PokeAPI, Pokemon } from "./pokeapi.js";
+import { CaughtPokemon, PokeAPI, Pokemon } from "./pokeapi.js";
+import * as fs from 'node:fs'
+import { SAVE_FILE } from "./savegame.js"
 
 
 export type CLICommand = {
@@ -15,10 +17,35 @@ export type State = {
     pokeapi: PokeAPI;
     nextLocationURL: string | null;
     prevLocationURL: string | null;
-    caughtPokemon: Record<string, Pokemon>;
+    caughtPokemon: Record<string, CaughtPokemon>;
+    party: CaughtPokemon[];
+    discovered: Record<number, string>;
+    currentEncounter: {
+        pokemon: Pokemon;
+        level: number;
+        tries: number;
+    } | null;
 }
 
 export function initState(cacheInterval: number): State {
+    let savedData = {
+        caughtPokemon: {},
+        party: [],
+        nextLocationURL: "https://pokeapi.co/api/v2/location-area/",
+        prevLocationURL: null,
+        discovered: {},
+    };
+
+    if (fs.existsSync(SAVE_FILE)) {
+        try {
+            const rawData = fs.readFileSync(SAVE_FILE, 'utf-8');
+            savedData = JSON.parse(rawData);
+            console.log("Welcome back! Loading your Pokedex...")
+        } catch (err) {
+            console.error("Save file is corrupted, starting fresh.")
+        }
+    }
+
     const rl = createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -31,8 +58,11 @@ export function initState(cacheInterval: number): State {
         readline: rl,
         commands: commands,
         pokeapi: new PokeAPI(cacheInterval),
-        nextLocationURL: null,
-        prevLocationURL: null,
-        caughtPokemon: {},
+        nextLocationURL: savedData.nextLocationURL,
+        prevLocationURL: savedData.prevLocationURL,
+        caughtPokemon: savedData.caughtPokemon,
+        party: savedData.party,
+        discovered: savedData.discovered,
+        currentEncounter: null,
     };
 }
